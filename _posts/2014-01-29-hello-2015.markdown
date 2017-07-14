@@ -1,4 +1,5 @@
 ---
+---
 layout:     post
 title:      "Hello 2017"
 subtitle:   " \"Hello World, Hello Blog\""
@@ -40,9 +41,10 @@ Yang 的 Blog 就这么开通了。
 
 在知乎上看到好多人推荐 [GitHub Pages](https://pages.github.com/) + [Jekyll](http://jekyllrb.com/) 快速 Building Blog 的技术方案，非常简单，不需要自己买服务器，甚至域名都没必要买。
 
-其优点非常明显：
+优点：
 
 * **Markdown** 带来的优雅写作体验
+  第一次使用Markdown，开始很是不熟悉，磕磕碰碰，还需要去看Markdown的语法，但是已经领略到了Markdown的优雅
 * 非常熟悉的 Git workflow ，**Git Commit 即 Blog Post**
 * 利用 GitHub Pages 的域名和免费无限空间，不用自己折腾主机
 	* 如果需要自定义域名，也只需要简单改改 DNS 加个 CNAME 就好了 
@@ -50,3 +52,9 @@ Yang 的 Blog 就这么开通了。
 
 
 ---
+
+## 致谢
+
+这个模板是从这里Huxpro/huxpro.github.io fork 的。 感谢这个作者
+
+感谢 Jekyll、Github Pages 和 Bootstrap!
