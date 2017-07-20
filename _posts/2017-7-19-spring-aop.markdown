@@ -126,6 +126,7 @@ Spring配置文件beans.xml中配置
     </beans> 
 
 在main函数中实例化一个TestServiceInter1或TestServiceInter2对象，可以分别调用sayHai()或sayBey()方法
+
     public class Test {
         public static void main(String[] args) {
             ApplicationContext ac = new ClassPathXmlApplicationContext("com/itheima/aop/beans.xml");
@@ -138,28 +139,30 @@ Spring配置文件beans.xml中配置
 
 最后我们来看一下结果：
 实例化TestServiceInter1时：
+
     log4j:WARN No appenders could be found for logger (org.springframework.context.support.ClassPathXmlApplicationContext).
     log4j:WARN Please initialize the log4j system properly.
     记录日志...sayHai
     Hello! Yang
 
 实例化TestServiceInter2时：
+
     log4j:WARN No appenders could be found for logger (org.springframework.context.support.ClassPathXmlApplicationContext).
     log4j:WARN Please initialize the log4j system properly.
     记录日志...sayBey
     Bey! Yang
 
 我们还可以看到，配置一个通知需要
-1.定义接口
-2.编写对象（被代理对象=目标对象）
-3.编写通知（前置通知在目标方法调用前调用）
-4.1 在bean.xml文件中配置
-4.2 配置被代理对象
-4.3 配种通知
-4.4.1 配置代理对象（ProxyFactoryBean的对象实例）
-4.4.2 配置代理接口集
-4.4.3 织入通知
-4.4.4 为代理对象配置被代理通知
+1.定义接口</br>
+2.编写对象（被代理对象=目标对象）</br>
+3.编写通知（前置通知在目标方法调用前调用）</br>
+4.1 在bean.xml文件中配置</br>
+4.2 配置被代理对象</br></br>
+4.3 配种通知</br>
+4.4.1 配置代理对象（ProxyFactoryBean的对象实例）</br>
+4.4.2 配置代理接口集</br>
+4.4.3 织入通知</br>
+4.4.4 为代理对象配置被代理通知</br>
 
 我们可以看到无论TestServiceInter1还是TestServiceInter2，都依赖于前置通知MyMethodeBeforeAdvice中的before()方法实现了记录日志的功能，但具体实现又有所不同。
 
@@ -175,6 +178,7 @@ TestServiceInter1和TestServiceInter2的交叉功能：记录日志就是一个�
 ### 二、后置通知
 后置通知与前置通知基本类似，后置通知需要实现AfterReturningAdvice接口(org.springframework.aop.AfterReturningAdvice)中的afterReturning()方法。配置后在目标方法执行之后执行，常用来处数据库连接或资源关闭功能。
 当需要在代理对象中织入多个通知的时候可以使用<list></list>来配置
+
     <bean id="proxyFactoryBean" class="org.springframework.aop.framework.ProxyFactoryBean">
     <!-- 代理接口集 -->
         <property name="proxyInterfaces">
@@ -199,8 +203,8 @@ TestServiceInter1和TestServiceInter2的交叉功能：记录日志就是一个�
 
 ### 三、环绕通知
 环绕通知需实现MethodInterceptor接口(org.aopalliance.intercept.MethodInterceptor)中invoke()方法。
-    public class MyMethodInterceptor implements MethodInterceptor {
 
+    public class MyMethodInterceptor implements MethodInterceptor {
         @Override
         public Object invoke(MethodInvocation arg0) throws Throwable {
             System.out.println("环绕通知被调用：调用方法前执行  ");  
