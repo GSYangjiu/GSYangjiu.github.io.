@@ -30,7 +30,7 @@ tags:
 4）DispatcherServlet借由ViewResolver完成ModelAndView中逻辑视图名到真实视图对象View的解析工作；
 5）DispatcherServlet根据ModelAndView中的数据模型对View对象进行视图渲染，最终客户端得到的响应消息可能是一个普通的html页面，也可能是一个xml或json串，甚至是一张图片或一个PDF文档等不同的媒体形式。
 
-![](/img/in-post/post-spring-bean/bean-life.png) 
+![](/img/in-post/post-springMVC/springMVC.jpg) 
 
 接下来让我们来看一个一个简单的springMVC的demo
 
