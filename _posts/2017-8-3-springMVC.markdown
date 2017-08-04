@@ -98,9 +98,9 @@ tags:
 
 当我们在浏览器输入localhost:8080/springMVC/welcome时，执行WelcomeContorlle的业务逻辑，控制台输出“welcome”，页面跳转到welcome.jsp
 
-![](/img/in-post/post-springMVC/result1.jpg) 
+![](/img/in-post/post-springMVC/result1.png) 
 
-![](/img/in-post/post-springMVC/result2.jpg) 
+![](/img/in-post/post-springMVC/result2.png) 
 
 但是上面这种继承AbstractController实现handleRequestInternal的方式来处理业务逻辑有一个很大的问题，有没有发现，那就是一个controller只能处理一种业务，增删改查就要写很多controller，是不是很蠢，所以一般我们不会用这种方方式，而是Annotation，即注解来实现。
 
