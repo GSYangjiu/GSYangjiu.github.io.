@@ -42,7 +42,8 @@ tags:
 
 打开catalina.sh ，找到下面一行字，
 
- <font color=red># OS specific support.  $var _must_ be set to either true or false.</font>
+<font color=red ># OS specific support.  $var _must_ be set to either true or false.</font>
+
 
 在下面增加如下代码
 
@@ -68,7 +69,7 @@ tags:
 >错误：-bash: ./startup.sh: Permission denied
 
 百度一下，.sh文件没有权限
-解决办法：
-用命令chmod 修改一下Tomcat的bin目录下的.sh权限就可以了
-如chmod u+x *.sh赋予.sh权限即可
+解决办法：</br>
+用命令chmod 修改一下Tomcat的bin目录下的.sh权限就可以了</br>
+如chmod u+x *.sh赋予.sh权限即可</br>
 在此执行，OK了。
