@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      linux下部署两个tomcat
-subtitle:   "小伙伴再也不用"
+subtitle:   "小伙伴再也不用wait了"
 date:       2017-08-22 21:39:00
 author:     "Yang"
 header-img: "img/sea-bg-2017.jpg"
