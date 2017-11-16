@@ -1,0 +1,581 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>TaoChen&#39;s Blog</title>
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="https://chentao92.github.io/"/>
+  <updated>2017-07-26T10:09:30.000Z</updated>
+  <id>https://chentao92.github.io/</id>
+  
+  <author>
+    <name>taochen</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>webpack的使用与配置</title>
+    <link href="https://chentao92.github.io/2016/11/09/webpack%E7%9A%84%E4%BD%BF%E7%94%A8%E4%B8%8E%E9%85%8D%E7%BD%AE/"/>
+    <id>https://chentao92.github.io/2016/11/09/webpack的使用与配置/</id>
+    <published>2016-11-09T07:11:43.000Z</published>
+    <updated>2017-07-26T10:09:30.000Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="什么是Webpack"><a href="#什么是Webpack" class="headerlink" title="什么是Webpack"></a>什么是Webpack</h3><p>WebPack可以看做是模块打包器：它做的事情是，分析你的项目结构，找到JavaScript模块以及其它的一些浏览器不能直接运行的拓展语言（Scss，TypeScript等），并将其打包为合适的格式以供浏览器使用。<br><img src="http://ww1.sinaimg.cn/bmiddle/9bd18299gw1f9f5147i48j21kw0sfaeh.jpg" alt=""><br><a id="more"></a></p>
+<h3 id="为什么要使用WebPack"><a href="#为什么要使用WebPack" class="headerlink" title="为什么要使用WebPack"></a>为什么要使用WebPack</h3><p>现今的很多网页其实可以看做是功能丰富的应用，它们拥有着复杂的JavaScript代码和一大堆依赖包。为了简化开发的复杂度，前端社区涌现出了很多好的实践方法<br>模块化，让我们可以把复杂的程序细化为小的文件;<br>优化页面加载，webpack可以将原本需要额外消耗请求的依赖打包放在一个文件里<br>这些改进确实大大的提高了我们的开发效率，但是利用它们开发的文件往往需要进行额外的处理才能让浏览器识别,而手动处理又是非常反锁的，这就为WebPack类的工具的出现提供了需求。</p>
+<h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><p>1.</p>
+<p><img src="http://ww4.sinaimg.cn/bmiddle/9bd18299gw1f9f5gee73oj205m02hmx4.jpg" alt=""><br>创建两个文件夹分别为<code>dist</code>和<code>src</code>，将源码(开发文件)放在<code>src</code>这个文件夹里，将生产文件放在<code>dist</code>文件夹里。</p>
+<p>2.每个项目下都必须配置有一个<code>webpack.config.js</code>（可以取任意的名字，但是推荐用该配置名），告诉<code>webpack</code>它需要做什么。</p>
+<p>3.输入<code>npm init</code>指令<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ npm init //生成package.json文件，存放依赖</div></pre></td></tr></table></figure></p>
+<p>4.在安装依赖的时候文件夹中还会多增加一个<code>node_modules</code>的文件夹，里面含有大量的文件，当我们在sublime中添加项目文件夹的时候为了避免因为显示<code>node_modules</code>文件夹而造成卡顿，可以在sublime的<code>preferences-settings-User</code>里面添加下面的配置。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="string">"folder_exclude_patterns"</span>:</div><div class="line">  [</div><div class="line">      <span class="string">"node_modules"</span>,</div><div class="line">  ]</div></pre></td></tr></table></figure></p>
+<p>5.添加<code>.gitignore</code>文件。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">.DS_Store</div><div class="line">node_modules</div></pre></td></tr></table></figure></p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>首先安装<code>webpack</code><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ npm install --save webpack //项目文件夹安装</div></pre></td></tr></table></figure></p>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>首先来配置webpack.config.js<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">module.exports = &#123;</div><div class="line">  entry:   <span class="string">"./src/main.js"</span>,//唯一入口文件</div><div class="line">  output: &#123;</div><div class="line">    path: path.join(__dirname, <span class="string">"dist"</span>),//打包后的文件存放的地方</div><div class="line">    filename: <span class="string">"bundle.js"</span>//打包后输出文件的文件名</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<blockquote>
+<p>注：“__dirname”是Node.js中的一个全局变量，它指向当前执行脚本所在的目录。</p>
+</blockquote>
+<p>现在如果你需要打包文件只需要在终端里你运行webpack命令就可以了，这条命令会自动参考webpack.config.js文件中的配置选项打包你的项目。<br>接下来配置packjson.json<br>在安装那里，我们提到过<code>npm init</code>，一路回车就行了，再打开package.json里面可以看到下面的信息。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="string">"name"</span>: <span class="string">""</span>,//项目名字，自动生成</div><div class="line">  <span class="string">"version"</span>: <span class="string">"1.0.0"</span>,</div><div class="line">  <span class="string">"description"</span>: <span class="string">""</span>,</div><div class="line">  <span class="string">"scripts"</span>: &#123;</div><div class="line">    //我们需要配置的地方就是这里啦</div><div class="line">  &#125;,</div><div class="line">  <span class="string">"author"</span>: <span class="string">"bai"</span>,</div><div class="line">  <span class="string">"license"</span>: <span class="string">"ISC"</span>,</div><div class="line">  <span class="string">"devDependencies"</span>: &#123;</div><div class="line">    <span class="string">"webpack"</span>: <span class="string">"^1.12.9"</span>//所需要用的依赖</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="使用webpack构建本地服务器"><a href="#使用webpack构建本地服务器" class="headerlink" title="使用webpack构建本地服务器"></a>使用webpack构建本地服务器</h3><p>想不想让你的浏览器监测你都代码的修改，并自动刷新修改后的结果，其实Webpack提供一个可选的本地开发服务器，这个本地服务器基于node.js构建，可以实现你想要的这些功能，不过它是一个单独的组件，在webpack中进行配置之前需要单独安装它作为项目依赖<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ npm install –save webapck-dev-server</div></pre></td></tr></table></figure></p>
+<p>然后在”script”处配置脚本语言<br> <code>&quot;dev&quot;: &quot;webpack-dev-server --content-base dist --port 6200 --color --progress --hot --inline&quot;</code><br>想要运行这段脚本，需要这样用npm run dev 就可以构建一个服务器了。</p>
+<h3 id="Loaders"><a href="#Loaders" class="headerlink" title="Loaders"></a>Loaders</h3><p>通过使用不同的loader，webpack通过调用外部的脚本或工具可以对各种各样的格式的文件进行处理，比如说把ES6转换为现代浏览器可以识别的JS文件。或者使用React开发时，合适的Loaders可以把React的JSX文件转换为JS文件。<br>Loaders需要单独安装并且需要在webpack.config.js下的modules关键字下进行配置，Loaders的配置选项包括以下几方面：</p>
+<ul>
+<li>test：一个匹配loaders所处理的文件的拓展名的正则表达式（必须）</li>
+<li>loader：loader的名称（必须）</li>
+<li>include/exclude:手动添加必须处理的文件（文件夹）或屏蔽不需要处理的文件（文件夹）（可选）；</li>
+<li>query：为loaders提供额外的设置选项（可选）</li>
+</ul>
+<h3 id="Babel"><a href="#Babel" class="headerlink" title="Babel"></a>Babel</h3><p>首先安装babel需要的依赖<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ npm install --save-dev babel-core babel-loader babel-preset-es2015 babel-preset-react</div></pre></td></tr></table></figure></p>
+<p>在webpack中的配置如下<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">module</span>.exports = &#123;</div><div class="line">  <span class="attr">entry</span>: <span class="string">"./src/main.jsx"</span>,</div><div class="line">  <span class="attr">output</span>: &#123;</div><div class="line">    <span class="attr">path</span>: path.join(__dirname, <span class="string">"dist"</span>),</div><div class="line">    <span class="attr">filename</span>: <span class="string">"bundle.js"</span>,</div><div class="line">  &#125;,</div><div class="line">  <span class="attr">module</span>: &#123;</div><div class="line">    <span class="attr">loaders</span>: [</div><div class="line">      &#123;</div><div class="line">        <span class="attr">test</span>: <span class="regexp">/\.jsx$/</span>,</div><div class="line">        <span class="attr">loader</span>: <span class="string">"babel"</span>,</div><div class="line">        <span class="attr">exclude</span>: <span class="regexp">/node_modules/</span>,</div><div class="line">      &#125;</div><div class="line">    ]</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Babel其实可以完全在webpack.config.js中进行配置，但是考虑到babel具有非常多的配置选项，在单一的webpack.config.js文件中进行配置往往使得这个文件显得太复杂，因此一些开发者支持把babel的配置选项放在一个单独的名为 “.babelrc” 的配置文件中。我们现在的babel的配置并不算复杂，不过之后我们会再加一些东西，因此现在我们就提取出相关部分，分两个配置文件进行配置（webpack会自动调用.babelrc里的babel配置选项），如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  &quot;presets&quot;: [&quot;react&quot;, &quot;es2015&quot;]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="CSS"><a href="#CSS" class="headerlink" title="CSS"></a>CSS</h3><p>webpack提供两个工具处理样式表<code>css-loader</code>和<code>style-loader</code>，二者处理的任务不同<code>css-loader</code>使你能够使用类似<code>@import</code>和<code>url(...)</code>的方法实现<code>require()</code>的功能,<code>style-loader</code>将所有的计算后的样式加入页面中，二者组合在一起使你能够把样式表嵌入webpack打包后的JS文件中。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ npm install --save style-loader stylus stylus-loader css-loader</div></pre></td></tr></table></figure></p>
+<p>在webpack中的配置如下<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">module</span>.exports = &#123;</div><div class="line">  <span class="attr">entry</span>: <span class="string">"./src/main.jsx"</span>,</div><div class="line">  <span class="attr">output</span>: &#123;</div><div class="line">    <span class="attr">path</span>: path.join(__dirname, <span class="string">"dist"</span>),</div><div class="line">    <span class="attr">filename</span>: <span class="string">"bundle.js"</span>,</div><div class="line">  &#125;,</div><div class="line">  <span class="attr">module</span>: &#123;</div><div class="line">    <span class="attr">loaders</span>: [</div><div class="line">      &#123;</div><div class="line">        <span class="attr">test</span>: <span class="regexp">/\.jsx$/</span>,</div><div class="line">        <span class="attr">loader</span>: <span class="string">"babel"</span>,</div><div class="line">        <span class="attr">exclude</span>: <span class="regexp">/node_modules/</span>,</div><div class="line">      &#125;,</div><div class="line">       &#123;</div><div class="line">        <span class="attr">test</span>: <span class="regexp">/\.styl$/</span>,</div><div class="line">        <span class="attr">exclude</span>: <span class="regexp">/node_modules/</span>,</div><div class="line">        <span class="attr">loader</span>: <span class="string">"style!css!stylus"</span>,</div><div class="line">      &#125;,</div><div class="line">      &#123;</div><div class="line">        <span class="attr">test</span>: <span class="regexp">/\.css$/</span>,</div><div class="line">        <span class="attr">loader</span>: <span class="string">"style!css"</span>,</div><div class="line">      &#125;,</div><div class="line">    ]</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在前面提到过，webpack只有单一的入口，其它的模块需要通过<code>import</code>,<code>require</code>,<code>url</code>等导入相关位置，为了让webpack能找到<code>main.css</code>文件，我们把它导入<code>main.jsx</code>中，如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">//main.jsx</div><div class="line">import React from &apos;react&apos;;</div><div class="line">import &#123;render&#125; from &apos;react-dom&apos;;</div><div class="line">import &apos;./scr/main.css&apos;;//使用require导入css文件</div></pre></td></tr></table></figure></p>
+<p>以上就是目前使用到的webpack的一些知识啦~后期还会继续完善的。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;什么是Webpack&quot;&gt;&lt;a href=&quot;#什么是Webpack&quot; class=&quot;headerlink&quot; title=&quot;什么是Webpack&quot;&gt;&lt;/a&gt;什么是Webpack&lt;/h3&gt;&lt;p&gt;WebPack可以看做是模块打包器：它做的事情是，分析你的项目结构，找到JavaScript模块以及其它的一些浏览器不能直接运行的拓展语言（Scss，TypeScript等），并将其打包为合适的格式以供浏览器使用。&lt;br&gt;&lt;img src=&quot;http://ww1.sinaimg.cn/bmiddle/9bd18299gw1f9f5147i48j21kw0sfaeh.jpg&quot; alt=&quot;&quot;&gt;&lt;br&gt;
+    
+    </summary>
+    
+      <category term="front End" scheme="https://chentao92.github.io/categories/front-End/"/>
+    
+    
+      <category term="webpack" scheme="https://chentao92.github.io/tags/webpack/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>关于Vim入门的一些小知识以及操作符</title>
+    <link href="https://chentao92.github.io/2016/10/12/Vim%E5%85%A5%E9%97%A8%E7%9F%A5%E8%AF%86/"/>
+    <id>https://chentao92.github.io/2016/10/12/Vim入门知识/</id>
+    <published>2016-10-12T02:13:41.000Z</published>
+    <updated>2017-07-26T06:39:33.000Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="Vim是什么？"><a href="#Vim是什么？" class="headerlink" title="Vim是什么？"></a>Vim是什么？</h3><blockquote>
+<p>Vim - the ubiquitous text editor<br>Vim is a highly configurable text editor built to make creating and changing any kind of text very efficient. It is included as “vi” with most UNIX systems and with Apple OS X.</p>
+</blockquote>
+<h3 id="如何使用Vim"><a href="#如何使用Vim" class="headerlink" title="如何使用Vim?"></a>如何使用Vim?</h3><p>打开终端，输入vim，便可以运行vim编辑器。打开Vim后直接默认进入普通模式，在普通模式下，每一个按键有独特的含义（按下a并不会输入a这个字符），所以这个时候你按键是不会有反应的，按下小i键(insert)或者小a键(append)就可以进入插入模式，这时每个按键就变成了相应字符的输入。按下ESC就可以返回普通模式。<br><a id="more"></a></p>
+<h3 id="普通模式下操作符的使用。"><a href="#普通模式下操作符的使用。" class="headerlink" title="普通模式下操作符的使用。"></a>普通模式下操作符的使用。</h3><p>Vim强大的编辑能力就来源于其普通模式命令。学会了这些操作符并且能灵活组合运用的话就可以更加高效的进行文本编辑。接下来就介绍一下实用的指令吧。如果是使用Sublime作为编程工具的话也可以使用一下指令哦。</p>
+<ul>
+<li><p>简单的移动<br>  <code>h</code>:左<br>  <code>j</code>:下<br>  <code>k</code>:上<br>  <code>l</code>:右<br>使用这些操作符就再也不用在字母键和箭头键之间来回切换啦。<br><code>b</code>(back/光标向前移动一个单词)<br><code>0</code> (光标移动到当前行行首)<br><code>$</code> (光标移动到当前行尾)<br><code>gg</code>（跳转到文档开头）<br><code>G</code>(跳转到文档末尾)<br><code>e</code>(跳转到每个单词的末尾字母)</p>
+</li>
+<li><p>文本对象</p>
+</li>
+</ul>
+<p><code>w</code> (word/光标向后移动一个单词)<br><code>t</code> (tag)<br><code>&#39;</code> (‘’之间的内容)<br><code>&quot;&quot;</code>(“”之间的内容)<br><code>(,{,[</code>这些也是同样的原理</p>
+<ul>
+<li>对文档的操作</li>
+</ul>
+<p><code>d</code> (delete)<br><code>dd</code>(删除全行)<br><code>dw</code> (删除单词)<br><code>xdd</code>(x代表数字，e.g:2dd删除两行)</p>
+<p><code>y</code> (yank/复制)<br><code>yy</code> (复制整行)<br><code>xyy</code> (复制x行)</p>
+<p>e.g:<br><code>cw</code>(改单词)<br><code>cit</code>(更改标签里的内容)<br><code>ci&quot;</code>(更改””里的内容)<br><code>ci(</code> (更改)</p>
+<p><code>p</code>(paste/粘贴)</p>
+<p><code>u</code>(undo/撤销)</p>
+<p>这些就是简单的Vim操作符啦，也可以说是很常用的，刚用的时候很不习惯，但是用习惯了就会发现这可以大大的提高效率的！</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;Vim是什么？&quot;&gt;&lt;a href=&quot;#Vim是什么？&quot; class=&quot;headerlink&quot; title=&quot;Vim是什么？&quot;&gt;&lt;/a&gt;Vim是什么？&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;Vim - the ubiquitous text editor&lt;br&gt;Vim is a highly configurable text editor built to make creating and changing any kind of text very efficient. It is included as “vi” with most UNIX systems and with Apple OS X.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;如何使用Vim&quot;&gt;&lt;a href=&quot;#如何使用Vim&quot; class=&quot;headerlink&quot; title=&quot;如何使用Vim?&quot;&gt;&lt;/a&gt;如何使用Vim?&lt;/h3&gt;&lt;p&gt;打开终端，输入vim，便可以运行vim编辑器。打开Vim后直接默认进入普通模式，在普通模式下，每一个按键有独特的含义（按下a并不会输入a这个字符），所以这个时候你按键是不会有反应的，按下小i键(insert)或者小a键(append)就可以进入插入模式，这时每个按键就变成了相应字符的输入。按下ESC就可以返回普通模式。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="front End" scheme="https://chentao92.github.io/categories/front-End/"/>
+    
+    
+      <category term="Vim" scheme="https://chentao92.github.io/tags/Vim/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>ubuntu16.04安装deb软件包步骤</title>
+    <link href="https://chentao92.github.io/2016/09/19/ubuntu16.04%E5%AE%89%E8%A3%85deb%E8%BD%AF%E4%BB%B6%E5%8C%85%E6%AD%A5%E9%AA%A4/"/>
+    <id>https://chentao92.github.io/2016/09/19/ubuntu16.04安装deb软件包步骤/</id>
+    <published>2016-09-19T07:00:58.000Z</published>
+    <updated>2017-07-26T06:39:33.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>一直以来在OS X环境下写代码，忽然想起自己还安装了一个Linux发行版ubuntu 14.04，近日升级到ubuntu16.04系统后，却一度卡在了一些图形界面软件的安装上，解决之后寻思还是记录一下以供参考吧，水平有限，求大神勿喷。</p>
+<p>像之前一样，从官网上下载到deb软件包，然后双击打开，会自动跳转到<code>ubuntu软件</code>界面，但这次好像有些不一样，无论如何点击“安装”，都无法顺利成功安装。好吧，当时确实有些懵了，后来从命令行的方式上尝试一下安装，才知道是由于缺少一些依赖导致的。<br><a id="more"></a><br><img src="http://ww4.sinaimg.cn/large/873fcdb7jw1f87mas01elj212i0x6tgi.jpg" alt=""></p>
+<h2 id="deb软件包"><a href="#deb软件包" class="headerlink" title="deb软件包"></a>deb软件包</h2><p>deb包是debian，ubuntu等Linux发行版的软件安装包，是类似于rpm的软件包，而非debian,ubuntu系统不推荐使用deb软件包，因为要解决软件包依赖问题，安装也比较麻烦。</p>
+<h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><p>第一步当然是去相应的官网下载对应的Linux版本安装包啦，今天我们只讨论deb包的情况。</p>
+<p>双击打开deb软件包，会自动跳到<code>ubuntu软件</code>，但这里我们遇到了无法直接双击安装啦。</p>
+<p><em>顺便提一句，Ubuntu 软件中心已在 Ubuntu 16.04 中被取消，取而代之的是 GNOME Software。「软件」是一个外观更现代、浏览更迅捷的商店应用，我们可以使用它来安装和更新应用程序。</em></p>
+<p>打开终端，这里以安装“网易云音乐ubuntu16.04（64位）为例，进入deb包所在的目录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ ls</div><div class="line">netease-cloud-music.deb</div></pre></td></tr></table></figure>
+<p>输入指令和密码：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ sudo dpkg -i netease-cloud-music.deb</div><div class="line">[sudo] tc 的密码：</div></pre></td></tr></table></figure>
+<p>之后就出现了下面的情形：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">正在选中未选择的软件包 netease-cloud-music。</div><div class="line">(正在读取数据库 ... 系统当前共安装有 178887 个文件和目录。)</div><div class="line">正准备解包 netease-cloud-music.deb  ...</div><div class="line">正在解包 netease-cloud-music (1.0.0) ...</div><div class="line">dpkg: 依赖关系问题使得 netease-cloud-music 的配置工作不能继续：</div><div class="line"> netease-cloud-music 依赖于 libqt5x11extras5 (&gt;= 5.1.0)；然而：</div><div class="line">  未安装软件包 libqt5x11extras5。</div><div class="line"> netease-cloud-music 依赖于 gstreamer1.0-plugins-bad；然而：</div><div class="line">  未安装软件包 gstreamer1.0-plugins-bad。</div><div class="line"> netease-cloud-music 依赖于 gstreamer1.0-plugins-ugly；然而：</div><div class="line">  未安装软件包 gstreamer1.0-plugins-ugly。</div><div class="line"> netease-cloud-music 依赖于 libqt5multimedia5-plugins；然而：</div><div class="line">  未安装软件包 libqt5multimedia5-plugins。</div><div class="line"> netease-cloud-music 依赖于 libqt5multimediawidgets5；然而：</div><div class="line">  未安装软件包 libqt5multimediawidgets5。</div><div class="line"> netease-cloud-music 依赖于 libqt5libqgtk2；然而：</div><div class="line">  未安装软件包 libqt5libqgtk2。</div><div class="line"></div><div class="line">dpkg: 处理软件包 netease-cloud-music (--install)时出错：</div><div class="line"> 依赖关系问题 - 仍未被配置</div><div class="line">正在处理用于 hicolor-icon-theme (0.15-0ubuntu1) 的触发器 ...</div><div class="line">正在处理用于 gnome-menus (3.13.3-6ubuntu3) 的触发器 ...</div><div class="line">正在处理用于 desktop-file-utils (0.22-1ubuntu5) 的触发器 ...</div><div class="line">正在处理用于 bamfdaemon (0.5.3~bzr0+16.04.20160415-0ubuntu1) 的触发器 ...</div><div class="line">Rebuilding /usr/share/applications/bamf-2.index...</div><div class="line">正在处理用于 mime-support (3.59ubuntu1) 的触发器 ...</div><div class="line">在处理时有错误发生：</div><div class="line"> netease-cloud-music</div></pre></td></tr></table></figure>
+<p>好吧，真相大白了，是缺少一些依赖关系的缘故，我们需要运行下面的指令来修正上面的错误：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ sudo apt-get -f install</div></pre></td></tr></table></figure>
+<p>接下来就是静候上述指令修复依赖关系和自动安装一些依赖。等提示符正确返回后，再执行下面的指令安装deb软件包：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ sudo dpkg -i netease-cloud-music.deb</div></pre></td></tr></table></figure>
+<p>等指令执行完成后，deb软件就已经被安装好了。<br><em>如果仍然未安装成功，此时可尝试重启后再执行安装，因为一些修复的依赖可能需要重启后才能生效。</em></p>
+<p>这里其实就是两个指令，前一个是修复依赖关系和自动下载安装所需的依赖，后一个是dpkg套件管理系统指令，下面来简单介绍一下后者：</p>
+<p>deb是debian linus的安装格式，跟red hat的rpm非常相似，最基本的安装命令是：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ sudo dpkg -i package.deb</div></pre></td></tr></table></figure>
+<p>dpkg是Debian Package的简写，是为Debian专门开发的套件管理系统，方便软件的安装、更新及移除。所有源自Debian的Linux发行版都使用dpkg，例如Ubuntu、Knoppix等。</p>
+<p>以下是一些 dpkg 的其他用法：</p>
+<p>1.查看package.deb软件包中包含的文件结构（其中-c等价于--contents）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ sudo dpkg -c &lt;package.deb&gt;</div></pre></td></tr></table></figure>
+<p>2.查看package.deb软件包的详细信息，包括软件名称、版本以及大小等（其中-I等价于--info）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ sudo dpkg -I &lt;package.deb&gt;</div></pre></td></tr></table></figure>
+<p>3.移除一个已安装的包裹（软件名称可通过dpkg -I命令查看，其中-r等价于--remove）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ sudo dpkg -r &lt;package.deb&gt;</div></pre></td></tr></table></figure>
+<p>4.完全清除一个已安装的包裹。和 remove 不同的是，remove 只是删掉数据和可执行文件，purge 另外还删除所有的配置文件，其中-P等价于--purge：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ sudo dpkg -P &lt;package.deb&gt;</div></pre></td></tr></table></figure>
+<p>5.查看package.deb软件包安装的所有文件（软件名称可通过dpkg -I命令查看，其中-L等价于--listfiles）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ sudo dpkg -L &lt;package.deb&gt;</div></pre></td></tr></table></figure>
+<p>6.查看package.deb软件包的详细信息（软件名称可通过dpkg -I命令查看，其中-s等价于--status）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ sudo dpkg -s &lt;package.deb&gt;</div></pre></td></tr></table></figure>
+<p>7.重新配置一个已经安装的包裹：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ sudo dpkg-reconfigure &lt;package.deb&gt;</div></pre></td></tr></table></figure>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="0" height="0" src="http://music.163.com/outchain/player?type=2&id=25638810&auto=0&height=0"></iframe><br><iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="https://music.163.com/outchain/player?type=2&id=25638810&auto=1&height=66"></iframe>
+
+<!-- >最近访客
+
+<div class="ds-recent-visitors" data-num-items="28" data-avatar-size="42" id="ds-recent-visitors"></div>
+<br> -->]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;一直以来在OS X环境下写代码，忽然想起自己还安装了一个Linux发行版ubuntu 14.04，近日升级到ubuntu16.04系统后，却一度卡在了一些图形界面软件的安装上，解决之后寻思还是记录一下以供参考吧，水平有限，求大神勿喷。&lt;/p&gt;
+&lt;p&gt;像之前一样，从官网上下载到deb软件包，然后双击打开，会自动跳转到&lt;code&gt;ubuntu软件&lt;/code&gt;界面，但这次好像有些不一样，无论如何点击“安装”，都无法顺利成功安装。好吧，当时确实有些懵了，后来从命令行的方式上尝试一下安装，才知道是由于缺少一些依赖导致的。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Linux" scheme="https://chentao92.github.io/categories/Linux/"/>
+    
+    
+      <category term="ubuntu" scheme="https://chentao92.github.io/tags/ubuntu/"/>
+    
+      <category term=".deb" scheme="https://chentao92.github.io/tags/deb/"/>
+    
+      <category term="apt-get" scheme="https://chentao92.github.io/tags/apt-get/"/>
+    
+      <category term="dpkg" scheme="https://chentao92.github.io/tags/dpkg/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>浅谈JavaScript异步机制与事件队列</title>
+    <link href="https://chentao92.github.io/2016/09/12/%E6%B5%85%E8%B0%88JavaScript%E5%BC%82%E6%AD%A5%E6%9C%BA%E5%88%B6%E4%B8%8E%E4%BA%8B%E4%BB%B6%E9%98%9F%E5%88%97/"/>
+    <id>https://chentao92.github.io/2016/09/12/浅谈JavaScript异步机制与事件队列/</id>
+    <published>2016-09-11T22:24:01.000Z</published>
+    <updated>2017-07-26T06:39:33.000Z</updated>
+    
+    <content type="html"><![CDATA[<p><code>setTimeout</code>这样一个函数大家一定不会陌生，但是对于<code>setTimeout</code>这样看起来很简单的东西，却有一个细节相对比较容易忽视。我们来看一下，对<code>setTimeout</code>的描述通常像这样：给定一个回调及n毫秒的延迟，<code>setTimeout</code>就会在n毫秒后运行该回调。但实际上，这个描述是存在严重缺陷的，只能说在多数情况下，该描述只能算接近正确，但在其他某些情况下，则会出现严重的错误。<br><a id="more"></a><br>首先，我们来看一个简单的例子，该例子常常会迷惑JavaScript新手：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">f1</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="built_in">console</span>.log(<span class="string">'1'</span>)</div><div class="line">&#125;</div><div class="line">setTimeout(f1,<span class="number">0</span>)</div><div class="line"><span class="built_in">console</span>.log(<span class="string">"2"</span>)</div></pre></td></tr></table></figure>
+<p>大家认为运行结果的打印顺序会是先1再2，还是先2再1呢？<br>按照定式思维，<code>setTimeout</code>此时定义了<code>0毫秒延迟</code>后执行<code>f1</code>函数，所以应该是立即执行，打印出1，然后再执行下一条语句打印出2。</p>
+<p>但实验之后，我们会发现，结果是先2再1。那在这个过程中，<code>setTimeout</code>究竟都干了些什么呢？<br>要想真正理解<code>setTimeout</code>，我们必须先大致了解JavaScript事件模型。</p>
+<p>所有的JavaScript代码都由JavaScript脚本运行时引擎（Runtime），也叫<code>JavaScript解释器</code>来负责解释。在<code>JavaScript解释器</code>调用<code>setTimeout</code>的时候，浏览器的<code>timer模块</code>会进行延时处理，当时间到达的时候（如本例中为0毫秒后），就会产生一个事件排入<code>事件队列</code>（事件队列由浏览器负责维护），<code>setTimeout</code>会立刻返回。<code>setTimeout</code>做的事情就是产生一个事件，然后被放到<code>事件队列</code>里面，此时<code>f1函数</code>根本不会被执行。<code>JavaScript解释器</code>会直接执行下一行代码，直到出现空闲没有任何代码了，这时浏览器才会检查事件队列。如果队列中有事件，则浏览器会挑选出排在最前面的事件，并把此事件的处理器移到<code>JavaScript解释器</code>去执行。事件处理器返回后，我们又回到队列处，继续取出下一个事件的处理器到<code>JavaScript解释器</code>去执行。</p>
+<p>所以，<code>console.log(&quot;2&quot;)</code>在没有被执行之前，<code>f1函数</code>不可能被执行，即使<code>setTimeout</code>中的延时为0毫秒。</p>
+<p>如果JavaScript解释器一直不空闲，那事件队列中的事件就永远不会被触发，就像下面例子这样：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">f1</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="built_in">console</span>.log(<span class="string">'1'</span>)</div><div class="line">&#125;</div><div class="line"></div><div class="line">setTimeout(f1,<span class="number">0</span>)</div><div class="line"><span class="built_in">console</span>.log(<span class="string">"2"</span>)</div><div class="line"></div><div class="line"><span class="keyword">while</span>(<span class="literal">true</span>) &#123;</div><div class="line">  </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>由于出现了一个while无限循环，造成了线程的阻塞，躺在事件队列里面的<code>f1</code>将永远无法执行。所以输出结果中只会看见2。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt; <span class="number">4</span>; i++) &#123;</div><div class="line">  setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(i)</div><div class="line">  &#125;,<span class="number">0</span>)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="number">4</span></div><div class="line"><span class="number">4</span></div><div class="line"><span class="number">4</span></div></pre></td></tr></table></figure>
+<p>这样一个例子为什么会出现这样的输出结果而不是<code>1 2 3</code>，现在就不难理解了吧。同样的缘故，在for循环没有结束之前，事件队列中的function函数是不会被执行的。</p>
+<p>所以说，<code>setTimeout</code>和<code>setInterval</code>一样，它们的异步机制决定了其计时精准度严格来说是不准确的。</p>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="0" height="0" src="http://music.163.com/outchain/player?type=2&id=426852063&auto=0&height=0"></iframe><br><iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="https://music.163.com/outchain/player?type=2&id=426852063&auto=1&height=66"></iframe>
+
+<!-- >最近访客
+
+<div class="ds-recent-visitors" data-num-items="28" data-avatar-size="42" id="ds-recent-visitors"></div>
+<br> -->]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;code&gt;setTimeout&lt;/code&gt;这样一个函数大家一定不会陌生，但是对于&lt;code&gt;setTimeout&lt;/code&gt;这样看起来很简单的东西，却有一个细节相对比较容易忽视。我们来看一下，对&lt;code&gt;setTimeout&lt;/code&gt;的描述通常像这样：给定一个回调及n毫秒的延迟，&lt;code&gt;setTimeout&lt;/code&gt;就会在n毫秒后运行该回调。但实际上，这个描述是存在严重缺陷的，只能说在多数情况下，该描述只能算接近正确，但在其他某些情况下，则会出现严重的错误。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="JavaScript" scheme="https://chentao92.github.io/categories/JavaScript/"/>
+    
+    
+      <category term="异步机制" scheme="https://chentao92.github.io/tags/%E5%BC%82%E6%AD%A5%E6%9C%BA%E5%88%B6/"/>
+    
+      <category term="事件队列" scheme="https://chentao92.github.io/tags/%E4%BA%8B%E4%BB%B6%E9%98%9F%E5%88%97/"/>
+    
+      <category term="setTimeout" scheme="https://chentao92.github.io/tags/setTimeout/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>shell知识小记和常用指令</title>
+    <link href="https://chentao92.github.io/2016/09/01/shell%E7%9F%A5%E8%AF%86%E5%B0%8F%E8%AE%B0%E5%92%8C%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4/"/>
+    <id>https://chentao92.github.io/2016/09/01/shell知识小记和常用指令/</id>
+    <published>2016-09-01T01:12:42.000Z</published>
+    <updated>2017-07-26T06:39:33.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>前些日子，整理了一些Shell相关的笔记，在此记录下来备用</p>
+<h2 id="shell"><a href="#shell" class="headerlink" title="shell"></a>shell</h2><ul>
+<li>shell是一个程序，中文名叫<code>命令解释器</code></li>
+<li>所有测试基于<code>bash</code>，shell里面，每个指令有一个返回值，0表示成功，非0表示不成功。上一个指令的返回值可以通过<code>$?</code>查看<a id="more"></a></li>
+<li><code>cd</code>是shell内建的命令，不是独立的程序</li>
+<li>操作系统会自带一些常见指令：如<code>ls</code> <code>cal</code> <code>date</code>等</li>
+</ul>
+<h2 id="shell的变量"><a href="#shell的变量" class="headerlink" title="shell的变量"></a>shell的变量</h2><p>shell的变量可以直接使用<code>name=val</code>这种形式来赋值<strong><em>（注意中间没有空格，不能有空格）</em></strong>，查看变量的时候，在变量名前面加上<code>$</code>符。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ name=Jerry</div><div class="line">$ <span class="built_in">echo</span> <span class="variable">$name</span></div><div class="line">Jerry</div></pre></td></tr></table></figure>
+<p>注意：解释<code>name</code>变量的是shell，而不是<code>echo</code>指令，shell解释完毕后把结果交给<code>echo</code>，由<code>echo</code>打印出来</p>
+<h2 id="PATH-变量"><a href="#PATH-变量" class="headerlink" title="PATH 变量"></a>PATH 变量</h2><ul>
+<li><p><code>PATH</code> 变量是shell的一个环境变量，通常情况下，环境变量应该大写。可用在创建它们的shell和从该shell派生的任意子shell或进程中。它们通常被称为全局变量，以区别于局部变量。</p>
+</li>
+<li><p><code>PATH</code>是由冒号<code>：</code>分割的，可通过<code>echo $PATH</code>查看：</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ echo $PATH</div><div class="line">/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</div></pre></td></tr></table></figure>
+<p>shell在执行一个程序时，会先去<code>PATH</code>指定的目录中找对应的程序，如果找到了则执行，没找到则会提示<code>command not found</code>。所以，如果把<code>PATH</code>变量赋值为空的话，在shell中我们将无法执行任何二进制程序。</p>
+<h2 id="文件描述符，流与重定向"><a href="#文件描述符，流与重定向" class="headerlink" title="文件描述符，流与重定向"></a>文件描述符，流与重定向</h2><p>每一个程序会默认打开三个流：</p>
+<ul>
+<li>标准输入（stdin），标准输出（stdout），标准错误输出（stderr）。</li>
+</ul>
+<p>shell使用<code>文件描述符</code>来标识一个流，分别为：</p>
+<ul>
+<li>标准输入： 0</li>
+<li>标准输出： 1</li>
+<li>标准错误输出： 2</li>
+</ul>
+<p><code>a&gt;b</code>，文件描述符a重新定向到b指向的地方。一般是重定向到文件或者设备。<br><em>注意：b不是指代文件描述符</em><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ ls 1&gt;a.txt</div></pre></td></tr></table></figure></p>
+<p>此时我们在终端里将看不见任何内容，因为ls的输出已经被放到a.txt这个文件里面去了.<br>由于重定向标准输入太常见了，shell允许简写，所以上述代码可直接写成:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ ls &gt; a.txt</div></pre></td></tr></table></figure></p>
+<p>再来看重定向到设备，<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ ls &gt; /dev/null</div></pre></td></tr></table></figure></p>
+<p>执行后在终端同样看不到任何结果，因为标准输出被重定向到<code>/dev/null</code>这个设备，而<code>/dev/null</code>是一个“黑洞”设备，数据会被丢弃。<a href="http://blog.csdn.net/kaiwii/article/details/7308729" target="_blank" rel="external"><em>相关阅读</em></a><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ ls -l &gt; a.txt 2&gt;a.txt</div><div class="line">$ ls -l &gt; a.txt 2&gt;&amp;1</div></pre></td></tr></table></figure></p>
+<p>第一行代码，表示把<code>ls -l</code>的标准输出定向到<code>a.txt</code>，再把标准错误输出（用文件描述符<code>2</code>表示）定向到<code>a.txt</code>。<br>也可以用上述第二行的写法，把某一个描述符定向到另一个描述符的指向，<code>2&gt;&amp;1</code>表示把标准错误输出定向到标准输入的指向，实质上等同于第一行代码。</p>
+<p>另外，重定向除了是<code>&gt;</code>，还可以是<code>&gt;&gt;</code>，表示追加:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">$ echo abc &gt;a.txt</div><div class="line">$ cat a.txt</div><div class="line">abc</div><div class="line">//将abc写入a.txt</div><div class="line"></div><div class="line">$ echo 123 &gt;a.txt</div><div class="line">$ cat a.txt</div><div class="line">123</div><div class="line">//123写入a.txt,原先的abc会被覆盖，不再保留</div><div class="line"></div><div class="line">$ echo ABC &gt;&gt;a.txt</div><div class="line">$ cat a.txt</div><div class="line">123</div><div class="line">ABC</div><div class="line">//新写入的ABC和原先a.txt中的123都在，&gt;&gt;表示追加</div></pre></td></tr></table></figure></p>
+<h2 id="管道"><a href="#管道" class="headerlink" title="管道"></a>管道</h2><p>管道操作符为<code>|</code>，可以将一个指令的标准输出连接到另一个指令的标准输入。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ ls | grep A <span class="comment"># 将当前目录下所有含有A的文件名列出来</span></div></pre></td></tr></table></figure>
+<p>首先<code>ls</code>会输出当前目录下的所有文件，然后标准输出会连接到<code>grep</code>的标准输入，最后<code>grep</code>执行将筛选出当前目录所有含有A的文件名。</p>
+<h2 id="命令替换"><a href="#命令替换" class="headerlink" title="命令替换"></a>命令替换</h2><p>命令替换和重定向有些相似，但区别在于命令替换是将一个命令的输出作为另外一个命令的参数。常用命令格式为：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ command1 `command2`</div></pre></td></tr></table></figure></p>
+<p>其中，<code>command2</code>的输出将作为<code>command1</code>的参数。需要注意的是这里的`符号，被它括起来的内容将作为命令执行，执行后的结果作为<code>command1</code>的参数。例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ cd `pwd`</div></pre></td></tr></table></figure></p>
+<p>该命令将pwd命令列出的目录作为cd命令的参数，结果仍然是停留在当前目录下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ echo `echo 123`</div><div class="line">123</div></pre></td></tr></table></figure></p>
+<p>反引号里的echo会先打印字符串123到标准输出，这个输出将作为外面的echo的参数，再执行后输出字符串123</p>
+<h2 id="别名"><a href="#别名" class="headerlink" title="别名"></a>别名</h2><p>别名就是可以给一个指令创建另外一个名字，一般是用来简化指令的，少打几个字符。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ <span class="built_in">alias</span> tc=ls <span class="comment"># 输入tc相当于输入ls</span></div><div class="line">$ <span class="built_in">alias</span> <span class="comment"># 直接输入alias，可以看到当前shell中所有的别名</span></div></pre></td></tr></table></figure>
+<h2 id="shell通配符"><a href="#shell通配符" class="headerlink" title="shell通配符"></a>shell通配符</h2><p><code>{a..z}</code>会自动扩展。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ echo A&#123;a..z&#125;</div><div class="line">Aa Ab Ac Ad Ae Af Ag Ah Ai Aj Ak Al Am An Ao Ap Aq Ar As At Au Av Aw Ax Ay Az</div></pre></td></tr></table></figure>
+<p><code>*</code>号shell会替你自动替换。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">$ ls</div><div class="line">a.jpg  b.jpg  c.txt  d.html</div><div class="line">//假设当前文件夹包含文件如上</div><div class="line"></div><div class="line">$ ls *.jpg</div><div class="line">a.jpg b.jpg</div><div class="line">//shell会先查找符合*.jpg的文件，找到后把参数*.jpg替换成a.jpg和b.jpg再传给ls执行</div><div class="line"></div><div class="line">$ rm *.jpg</div><div class="line">$ ls</div><div class="line">c.txt  d.html</div><div class="line">//同样shell会先把*.jpg替换成a.jpg和b.jpg，再传给rm执行删除</div><div class="line"></div><div class="line">$ ls *.jpg</div><div class="line">ls: *.jpg: No such file or directory</div><div class="line">shell没有找到符合*.jpg的文件，直接把参数*.jpg给ls</div></pre></td></tr></table></figure>
+<h2 id="子shell，环境变量"><a href="#子shell，环境变量" class="headerlink" title="子shell，环境变量"></a>子shell，环境变量</h2><ul>
+<li><code>环境变量</code>是当前shell中能够被子shell继承的变量，普通变量不能被继承。在子shell里修改变量，是不会影响父shell的。在父shell中存在的变量，会在子shell继承。</li>
+<li>使用指令<code>export name=val</code>可将普通变量导出为环境变量。</li>
+<li>用圆括号括起来的指令会在<code>子shell</code>中执行，不会对<code>父shell</code>造成影响：<code>(ls)</code><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">$ pwd</div><div class="line">/Users/tc/Documents</div><div class="line">$ (cd ..;ls)</div><div class="line">Applications     Documents      Movies</div><div class="line">Public           Downloads      Music</div><div class="line">Desktop          Library        Pictures</div><div class="line">$ pwd</div><div class="line">/Users/tc/Documents</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>上述代码我们可以看到，<code>父shell</code>目录在<code>/Users/tc/Documents</code>，在<code>子shell</code>中执行<code>cd ..;ls</code>后，对<code>父shell</code>所在目录不会造成影响，仍然在<code>/Users/tc/Documents</code>，并不会返回上一级目录</p>
+<ul>
+<li>变量赋值还可以使用这种语法：<code>name=$(command)</code>，<code>子shell</code>前面加上<code>$</code>，会得到<code>command命令</code>的输出做为<code>变量name</code>的值。<br>如：<code>name=$(ls)</code>，会把<code>ls</code>在<code>子shell</code>中的执行结果给<code>变量name</code>。<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ name=$(ls)</div><div class="line">$ echo $name</div><div class="line">Applications Desktop Documents Downloads Library Movies Music Pictures Public</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="shell的配置文件"><a href="#shell的配置文件" class="headerlink" title="shell的配置文件"></a>shell的配置文件</h2><p>一般为<code>~/.bashrc</code>、<code>~/.zshrc</code><br>配置文件比较正规的叫法是：运行控制文件(run control)<br>打开shell时，会先加载读取<code>~/.zshrc</code>配置文件</p>
+<h2 id="在shell中不换行执行多个指令"><a href="#在shell中不换行执行多个指令" class="headerlink" title="在shell中不换行执行多个指令"></a>在shell中不换行执行多个指令</h2><ul>
+<li>使用分号<code>;</code></li>
+<li>使用<code>&amp;&amp;</code>或者<code>||</code>号。</li>
+</ul>
+<h2 id="常用指令"><a href="#常用指令" class="headerlink" title="常用指令"></a>常用指令</h2><ul>
+<li><code>ls</code>：list，表示显示当前目录下所有的内容。<br>注意：<code>ls</code>根本不从<code>标准输入</code>里面读取内容，其参数是通过命令行直接提供给它的。</li>
+<li><code>cd</code>：change directory, 改变你当前的工作目录</li>
+<li><code>rm</code>：remove，删除文件或者文件夹，使用的时候需要小心，删除的东西不会到回收站中，会直接删掉</li>
+<li><code>mkdir</code>：make directory，建立文件夹</li>
+<li><code>rmdir</code>：remove directory，删除文件夹，只能删除空的文件夹，非空的文件夹需要使用<code>rm</code>并配合<code>-r</code>参数来删除，也就是<code>rm -r [dir name]</code></li>
+<li><code>cp</code>：copy，拷贝文件，比如<code>cp a.txt b.txt</code>，将<code>a.txt</code>文件拷贝一份，名字叫做<code>b.txt</code></li>
+<li><code>touch</code>：新建一个空的文件，比如<code>touch a.txt</code>，在当前目录下新建一个名叫<code>a.txt</code>的空文件</li>
+<li><code>pwd</code>：print working directory，打印当前的工作目录，也就是你当前在什么目录当中</li>
+<li><code>cat</code>：查看文本文件的内容</li>
+<li><code>open</code>：用来将路径在finder中打开</li>
+<li><code>echo</code>：打印字符串到标准输出</li>
+<li><code>mv</code>：移动或重命名文件</li>
+<li><code>ping</code>：通过检查网络中其他主机的应答信息，来确认网络的连通性，语法：ping[参数]主机名（或ip地址）</li>
+<li><code>grep</code>：在文件中搜寻匹配的行并进行输出，语法：grep[参数]&lt;要找的字串&gt;&lt;原文件&gt;</li>
+<li><code>exit</code>：退出当前shell</li>
+<li><code>export</code>：设置与显示环境变量</li>
+<li><code>which</code>：显示指令的绝对路径，可以用来看一个指令的类型， e.g.<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ which pwd</div><div class="line">pwd: shell built-in command</div><div class="line">$ which cd</div><div class="line">cd: shell built-in command</div><div class="line">$ which cal</div><div class="line">/usr/bin/cal</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>说明：<code>pwd</code>、<code>cd</code>是shell内建的命令，不是程序，而<code>cal</code>是<code>/usr/bin/</code>目录下的一个二进制程序</p>
+<h2 id="其他指令"><a href="#其他指令" class="headerlink" title="其他指令"></a>其他指令</h2><ul>
+<li><code>who</code>：显示当前已登录用户的信息</li>
+<li><code>whoami</code>：显示当前用户名</li>
+<li><code>awk</code>：可以拿来做命令行级别的编辑，比如想挑出数据的第8列：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">$ ls -l</div><div class="line">total 0</div><div class="line">drwx------   6 tc  staff   204  8 21 01:05 Applications</div><div class="line">drwxr-xr-x@  6 tc  staff   204  8 22 20:17 Applications (Parallels)</div><div class="line">drwxr-xr-x  22 tc  staff   748  8 25 15:24 Desktop</div><div class="line">drwx------+ 14 tc  staff   476  8 24 22:42 Documents</div><div class="line">drwx------+ 20 tc  staff   680  8 25 04:18 Downloads</div><div class="line">drwx------@ 56 tc  staff  1904  8 16 21:24 Library</div><div class="line">drwx------+  7 tc  staff   238  7 26 17:47 Movies</div><div class="line">drwx------+ 11 tc  staff   374  6 25 17:56 Music</div><div class="line">drwx------+  6 tc  staff   204  8  4 02:08 Pictures</div><div class="line">drwxr-xr-x+  6 tc  staff   204  4  7 22:39 Public</div><div class="line">$ ls -l | awk &apos;&#123;print$8&#125;&apos;</div><div class="line"></div><div class="line">01:05</div><div class="line">20:17</div><div class="line">15:24</div><div class="line">22:42</div><div class="line">04:18</div><div class="line">21:24</div><div class="line">17:47</div><div class="line">17:56</div><div class="line">02:08</div><div class="line">22:39</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>注意：<code>awk</code>后面的参数要跟单引号，因为没有引号或者双引号，会被shell先扩展变量做出解释后再被<code>awk</code>拿到，而跟单引号转义后会被<code>awk</code>直接拿到。</p>
+<ul>
+<li><code>wc</code>：word count，用来统计单词数，用<code>-l</code>：line参数可以来统计行数:<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">$ ls -l</div><div class="line">total 0</div><div class="line">drwx------   6 tc  staff   204  8 21 01:05 Applications</div><div class="line">drwxr-xr-x@  6 tc  staff   204  8 22 20:17 Applications (Parallels)</div><div class="line">drwxr-xr-x  22 tc  staff   748  8 25 15:24 Desktop</div><div class="line">drwx------+ 14 tc  staff   476  8 24 22:42 Documents</div><div class="line">drwx------+ 20 tc  staff   680  8 25 04:18 Downloads</div><div class="line">drwx------@ 56 tc  staff  1904  8 16 21:24 Library</div><div class="line">drwx------+  7 tc  staff   238  7 26 17:47 Movies</div><div class="line">drwx------+ 11 tc  staff   374  6 25 17:56 Music</div><div class="line">drwx------+  6 tc  staff   204  8  4 02:08 Pictures</div><div class="line">drwxr-xr-x+  6 tc  staff   204  4  7 22:39 Public</div><div class="line">$ ls -l | wc -l</div><div class="line">  11</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>从<code>total 0</code>开始一共是11行，说明一共有10个文件</p>
+<h2 id="subl命令：后跟路径，可将此目录添加到sublime并启动"><a href="#subl命令：后跟路径，可将此目录添加到sublime并启动" class="headerlink" title="subl命令：后跟路径，可将此目录添加到sublime并启动"></a>subl命令：后跟路径，可将此目录添加到sublime并启动</h2><p>Sublime Text 编辑器自带一个<code>subl</code>程序，但第一次是无法运行的，因为其存在的默认路径不在<code>$PATH</code>中，建议修改如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ cp /Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl  /usr/local/bin</div></pre></td></tr></table></figure></p>
+<p>e.g.<br><img src="http://ww4.sinaimg.cn/large/873fcdb7gw1f85v11ggyhj21kw09bjv2.jpg" alt=""></p>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="0" height="0" src="http://music.163.com/outchain/player?type=2&id=35470197&auto=0&height=0"></iframe><br><iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="https://music.163.com/outchain/player?type=2&id=35470197&auto=1&height=66"></iframe>
+
+<!-- >最近访客
+
+<div class="ds-recent-visitors" data-num-items="28" data-avatar-size="42" id="ds-recent-visitors"></div>
+<br> -->]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;前些日子，整理了一些Shell相关的笔记，在此记录下来备用&lt;/p&gt;
+&lt;h2 id=&quot;shell&quot;&gt;&lt;a href=&quot;#shell&quot; class=&quot;headerlink&quot; title=&quot;shell&quot;&gt;&lt;/a&gt;shell&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;shell是一个程序，中文名叫&lt;code&gt;命令解释器&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;所有测试基于&lt;code&gt;bash&lt;/code&gt;，shell里面，每个指令有一个返回值，0表示成功，非0表示不成功。上一个指令的返回值可以通过&lt;code&gt;$?&lt;/code&gt;查看
+    
+    </summary>
+    
+      <category term="Note" scheme="https://chentao92.github.io/categories/Note/"/>
+    
+    
+      <category term="shell" scheme="https://chentao92.github.io/tags/shell/"/>
+    
+      <category term="流与重定向" scheme="https://chentao92.github.io/tags/%E6%B5%81%E4%B8%8E%E9%87%8D%E5%AE%9A%E5%90%91/"/>
+    
+      <category term="管道" scheme="https://chentao92.github.io/tags/%E7%AE%A1%E9%81%93/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Git指令小记</title>
+    <link href="https://chentao92.github.io/2016/08/24/Git%E6%8C%87%E4%BB%A4%E5%B0%8F%E8%AE%B0/"/>
+    <id>https://chentao92.github.io/2016/08/24/Git指令小记/</id>
+    <published>2016-08-24T14:40:48.000Z</published>
+    <updated>2017-07-26T06:39:33.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><code>git</code>指令有很多，除了常用的git clone、git init、git add、git commit、git push，一些其他的如分支、回退等指令用到的频率不高，所以整理了一份<code>git</code>指令笔记以备遗忘时查阅</p>
+<h2 id="笔记"><a href="#笔记" class="headerlink" title="笔记"></a>笔记</h2><h3 id="git基本指令"><a href="#git基本指令" class="headerlink" title="git基本指令"></a>git基本指令</h3><p><code>git init</code> 初始化一个git仓库<br><a id="more"></a><br><code>git add a.txt</code>  把a.txt 添加到stage（暂存）区    （不在暂存区的文件，git指令是不管的）</p>
+<p><code>git add .</code> 用来添加当前目录全部文件到暂存区</p>
+<p><code>git commit -m &#39;我的第一行代码&#39;</code> 把暂存区内容添加到提交区，-m 参数后面引号内容为注释<em>（必须要有注释才能提交）</em></p>
+<p><code>git status</code>用来查看git仓库的状态 </p>
+<p><code>git push</code> 用来把本地仓库推到远程仓库</p>
+<p><code>git push -f</code> 用来强制推送到远程，把远程的提交全部覆盖掉</p>
+<p><code>git pull</code> 用于拉取远程仓库的新提交到本地仓库</p>
+<p>拓展：<a href="[http://www.121ask.com/thread-5627-1.html">git暂存区和工作区详解</a> &nbsp; &nbsp;<a href="http://www.myexception.cn/software/1222764.html" target="_blank" rel="external">git status详细参考说明</a></p>
+<h3 id="zsh安装oh-my-zsh插件后的简化指令"><a href="#zsh安装oh-my-zsh插件后的简化指令" class="headerlink" title="zsh安装oh my zsh插件后的简化指令"></a>zsh安装oh my zsh插件后的简化指令</h3><p><code>tab</code>键用来补全，调出补全项和切换补全项</p>
+<p><code>gss</code> 或者 <code>gst</code> 查看目录状态</p>
+<p><code>glog</code> 查看提交日志（ <code>q</code> 退出日志页面）</p>
+<p><code>ga .</code> 添加文件</p>
+<p><code>gco</code> 相当于<code>git checkout</code></p>
+<p><code>gc -m</code> 相当于 <code>git commit -m &#39;注释&#39;</code></p>
+<h3 id="git-checkout"><a href="#git-checkout" class="headerlink" title="git checkout"></a>git checkout</h3><p><code>git checkout</code> 的主要功能就是迁出一个分支的特定版本，默认是迁出分支的head版本。</p>
+<p><code>git checkout master</code> 迁出master分支的head版本。</p>
+<p><code>git checkout testing</code> 切换到testing分支上，通过向该命令传递一个<code>-b</code>参数，可实现创建并切换分支的功能</p>
+<p><code>git checkout tag_name</code> 在当前分支上，取出 tag_name 的版本</p>
+<p><code>git checkout master file_name</code> 放弃当前对文件file_name的修改</p>
+<p><code>git checkout commit_id file_name</code> 取文件file_name的 在commit_id时的版本，commit_id为 git commit 时的sha值。</p>
+<h3 id="git-branch"><a href="#git-branch" class="headerlink" title="git branch"></a>git branch</h3><p><code>git branch</code> 列出本地分支，以*开头表示</p>
+<p><code>git branch -r</code> 列出远程仓库中的分支</p>
+<p><code>git branch -a</code> 列出远程与本地仓库的全部分支</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ git branch</div><div class="line">* master</div><div class="line"></div><div class="line">$ git branch -r</div><div class="line">origin/master</div><div class="line"></div><div class="line">$ git branch -a</div><div class="line">* master</div><div class="line">  remotes/origin/master</div></pre></td></tr></table></figure>
+<p>上面命令表示，本地主机的当前分支是<code>master</code>，远程分支是<code>origin/master</code>。</p>
+<p><code>git branch testing</code> 创建名为testing的新分支</p>
+<p><code>git merge hotfix</code> 将hotfix分支合并到当前分支当中去</p>
+<p><code>git branch -d testing</code> 删除名为testing的本地分支，<code>-d</code>选项只能删除已经被当前分支所合并过的分支，而要强制删除没有被合并过的分支，可以使用<code>-D</code></p>
+<p><code>git branch -m oldbranch newbranch</code> 重命名分支，<code>-M</code>用来强制重命名，如<code>newbranch</code>已经存在时</p>
+<h3 id="git-clone"><a href="#git-clone" class="headerlink" title="git clone"></a>git clone</h3><p>从远程主机克隆一个版本库，需要用到指令<code>git clone</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git clone https://github.com/jquery/jquery.git</div></pre></td></tr></table></figure></p>
+<p>上述命令表示，克隆了jQuery的版本库</p>
+<h3 id="git-remote"><a href="#git-remote" class="headerlink" title="git remote"></a>git remote</h3><p>git会要求每个远程主机都要指定一个主机名，我们用<code>git remote</code>命令来管理主机名。 当指令后面不带选项的时候，<code>git remote</code>命令会列出所有远程主机。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ git remote</div><div class="line">origin</div></pre></td></tr></table></figure>
+<p><code>git remote -v</code>可以查看远程主机的网址</p>
+<p><code>git clone</code>克隆版本库的时候，所使用的远程主机会自动被git命名为<code>origin</code>，如果想用其他的主机名，需要用<code>git clone</code>命令的<code>-o</code>选项指定。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ git clone -o &lt;其他的主机名&gt; &lt;url&gt;</div><div class="line">$ git remote</div><div class="line">&lt;其他的主机名&gt;</div></pre></td></tr></table></figure>
+<p>上面命令表示，克隆的时候，指定远程主机叫做&lt;其他的主机名&gt;。</p>
+<h3 id="git-push"><a href="#git-push" class="headerlink" title="git push"></a>git push</h3><p><code>git push</code>命令用于将本地分支的更新，推送到远程主机。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git push &lt;远程主机名&gt; &lt;本地分支名&gt;:&lt;远程分支名&gt;</div></pre></td></tr></table></figure>
+<p>如果当前分支与远程分支之间存在追踪关系，则本地分支和远程分支都可以省略。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git push origin</div></pre></td></tr></table></figure></p>
+<p>上面命令表示，将当前分支推送到origin主机的对应分支。</p>
+<p>如果当前分支只有一个追踪分支，那么主机名都可以省略。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git push</div></pre></td></tr></table></figure></p>
+<h3 id="git-fetch"><a href="#git-fetch" class="headerlink" title="git fetch"></a>git fetch</h3><p>在远程主机的版本库有了更新（commit）时，需要将这些更新取回本地，这用到git fetch命令。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git fetch &lt;远程主机名&gt;</div></pre></td></tr></table></figure>
+<p>将某个远程主机的更新，全部取回本地</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git fetch &lt;远程主机名&gt; &lt;分支名&gt;</div></pre></td></tr></table></figure>
+<p>取回远程主机的某个特定分支的更新<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git fetch origin master</div></pre></td></tr></table></figure></p>
+<p>取回origin主机的master分支</p>
+<h3 id="git-pull"><a href="#git-pull" class="headerlink" title="git pull"></a>git pull</h3><p><code>git pull</code>命令的作用是，取回远程主机某个分支的更新，再与本地的指定分支合并。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git pull &lt;远程主机名&gt; &lt;远程分支名&gt;:&lt;本地分支名&gt;</div></pre></td></tr></table></figure>
+<p>取回远程主机某个分支的更新，再与本地的某个分支合并<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ git pull origin next:master</div><div class="line">//取回origin主机的next分支，与本地的master分支合并</div></pre></td></tr></table></figure></p>
+<p>如果远程分支是与当前分支合并，则冒号后面的部分可以省略。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git pull origin next</div></pre></td></tr></table></figure></p>
+<p>上面命令表示，取回<code>origin/next</code>分支，再与当前分支合并。实质上，这等同于先做<code>git fetch</code>，再做<code>git merge</code>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ git fetch origin</div><div class="line">$ git merge origin/master</div></pre></td></tr></table></figure></p>
+<h3 id="git也允许手动建立追踪关系"><a href="#git也允许手动建立追踪关系" class="headerlink" title="git也允许手动建立追踪关系"></a>git也允许手动建立追踪关系</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ git branch --set-upstream dev origin/master </div><div class="line">//指定dev分支追踪origin/master分支</div></pre></td></tr></table></figure>
+<p>若当前分支与远程分支存在追踪关系，<code>git pull</code>就可以省略远程分支名<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git pull origin</div></pre></td></tr></table></figure></p>
+<p>上面命令表示，本地的当前分支自动与对应的origin主机”追踪分支”（remote-tracking branch）进行合并。</p>
+<p>如果当前分支只有一个追踪分支，连远程主机名都可以省略。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git pull</div></pre></td></tr></table></figure></p>
+<p>上面命令表示，当前分支自动与唯一一个追踪分支进行合并。</p>
+<h3 id="忽略某个被追踪文件的修改"><a href="#忽略某个被追踪文件的修改" class="headerlink" title="忽略某个被追踪文件的修改"></a>忽略某个被追踪文件的修改</h3><p>如果某些文件已经被跟踪了， 再添加到.gitinore时可能会失效， 可用以下命令来忽略：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git update-index --assume-unchanged filename</div></pre></td></tr></table></figure>
+<p>撤销可使用指令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git update-index --no-assume-unchanged filename</div></pre></td></tr></table></figure>
+<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>以上为收集整理的部分git指令，欢迎补充完善，如有遗误，还请指正。</p>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="0" height="0" src="http://music.163.com/outchain/player?type=2&id=28978321&auto=0&height=0"></iframe><br><iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="https://music.163.com/outchain/player?type=2&id=28978321&auto=1&height=66"></iframe>
+
+<!-- >最近访客
+
+<div class="ds-recent-visitors" data-num-items="28" data-avatar-size="42" id="ds-recent-visitors"></div>
+<br> -->]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;&lt;code&gt;git&lt;/code&gt;指令有很多，除了常用的git clone、git init、git add、git commit、git push，一些其他的如分支、回退等指令用到的频率不高，所以整理了一份&lt;code&gt;git&lt;/code&gt;指令笔记以备遗忘时查阅&lt;/p&gt;
+&lt;h2 id=&quot;笔记&quot;&gt;&lt;a href=&quot;#笔记&quot; class=&quot;headerlink&quot; title=&quot;笔记&quot;&gt;&lt;/a&gt;笔记&lt;/h2&gt;&lt;h3 id=&quot;git基本指令&quot;&gt;&lt;a href=&quot;#git基本指令&quot; class=&quot;headerlink&quot; title=&quot;git基本指令&quot;&gt;&lt;/a&gt;git基本指令&lt;/h3&gt;&lt;p&gt;&lt;code&gt;git init&lt;/code&gt; 初始化一个git仓库&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Note" scheme="https://chentao92.github.io/categories/Note/"/>
+    
+    
+      <category term="Git" scheme="https://chentao92.github.io/tags/Git/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>如何用纯CSS实现带小三角形的会话框</title>
+    <link href="https://chentao92.github.io/2016/08/12/%E5%A6%82%E4%BD%95%E7%94%A8%E7%BA%AFCSS%E5%AE%9E%E7%8E%B0%E5%B8%A6%E5%B0%8F%E4%B8%89%E8%A7%92%E5%BD%A2%E7%9A%84%E4%BC%9A%E8%AF%9D%E6%A1%86/"/>
+    <id>https://chentao92.github.io/2016/08/12/如何用纯CSS实现带小三角形的会话框/</id>
+    <published>2016-08-12T03:07:31.000Z</published>
+    <updated>2017-07-26T06:39:33.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>生活中能看到很多带小三角形的会话框，如QQ、微信、时间轴等等，就像这样的：<br><img src="http://ww1.sinaimg.cn/large/873fcdb7gw1f7pm570m9xj209803m74c.jpg" alt=""><br>在内容外面都有一个带小三角形的矩形框包围着，看上去视觉效果还不错，于是决定动手写一个，用纯CSS就能实现，下面我们来看一下。</p>
+<h2 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a>基本原理</h2><h3 id="首先我们来看一下纯CSS实现三角形的原理："><a href="#首先我们来看一下纯CSS实现三角形的原理：" class="headerlink" title="首先我们来看一下纯CSS实现三角形的原理："></a>首先我们来看一下纯CSS实现三角形的原理：</h3><p>其实就是对于border和transparent的应用<br><a id="more"></a><br><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">p</span>&gt;</span>向上的三角:<span class="tag">&lt;/<span class="name">p</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"top"</span>&gt;</span></div><div class="line">    <span class="comment">&lt;!--向上的三角--&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"></div><div class="line">  <span class="tag">&lt;<span class="name">p</span>&gt;</span>向下的三角:<span class="tag">&lt;/<span class="name">p</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"bottom"</span>&gt;</span></div><div class="line">    <span class="comment">&lt;!--向下的三角--&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"></div><div class="line">  <span class="tag">&lt;<span class="name">p</span>&gt;</span>向左的三角:<span class="tag">&lt;/<span class="name">p</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"left"</span>&gt;</span></div><div class="line">    <span class="comment">&lt;!--向左的三角--&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"></div><div class="line">  <span class="tag">&lt;<span class="name">p</span>&gt;</span>向右的三角:<span class="tag">&lt;/<span class="name">p</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"right"</span>&gt;</span></div><div class="line">    <span class="comment">&lt;!--向右的三角--&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<h3 id="再用CSS分别实现向上、下、左、右的三角形"><a href="#再用CSS分别实现向上、下、左、右的三角形" class="headerlink" title="再用CSS分别实现向上、下、左、右的三角形"></a>再用CSS分别实现向上、下、左、右的三角形</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*向上的三角*/</span></div><div class="line"><span class="selector-class">.top</span> &#123;</div><div class="line">  <span class="attribute">width</span>: <span class="number">0</span>; </div><div class="line">  <span class="attribute">height</span>:<span class="number">0</span>; </div><div class="line">  <span class="attribute">border-left</span>:<span class="number">50px</span> solid transparent;</div><div class="line">  <span class="attribute">border-right</span>:<span class="number">50px</span> solid transparent;</div><div class="line">  <span class="attribute">border-bottom</span>:<span class="number">50px</span> solid red;</div><div class="line">&#125;</div><div class="line"></div><div class="line"> <span class="comment">/*向下的三角*/</span></div><div class="line"><span class="selector-class">.bottom</span> &#123;</div><div class="line">  <span class="attribute">width</span>:<span class="number">0</span>; </div><div class="line">  <span class="attribute">height</span>:<span class="number">0</span>; </div><div class="line">  <span class="attribute">border-left</span>:<span class="number">50px</span> solid transparent;</div><div class="line">  <span class="attribute">border-right</span>:<span class="number">50px</span> solid transparent;</div><div class="line">  <span class="attribute">border-top</span>:<span class="number">50px</span> solid <span class="number">#0066cc</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line">    </div><div class="line"> <span class="comment">/*向左的三角*/</span></div><div class="line"><span class="selector-class">.left</span> &#123;</div><div class="line">  <span class="attribute">width</span>:<span class="number">0</span>; </div><div class="line">  <span class="attribute">height</span>:<span class="number">0</span>; </div><div class="line">  <span class="attribute">border-top</span>:<span class="number">50px</span> solid transparent;</div><div class="line">  <span class="attribute">border-bottom</span>:<span class="number">50px</span> solid transparent; </div><div class="line">  <span class="attribute">border-right</span>:<span class="number">50px</span> solid yellow; </div><div class="line">&#125;</div><div class="line">   </div><div class="line"><span class="comment">/*向右的三角*/</span></div><div class="line"><span class="selector-class">.right</span> &#123;</div><div class="line">  <span class="attribute">width</span>:<span class="number">0</span>; </div><div class="line">  <span class="attribute">height</span>:<span class="number">0</span>; </div><div class="line">  <span class="attribute">border-top</span>:<span class="number">50px</span> solid transparent;</div><div class="line">  <span class="attribute">border-bottom</span>: <span class="number">50px</span> solid transparent;</div><div class="line">  <span class="attribute">border-left</span>: <span class="number">50px</span> solid green;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我们将上述代码整理在一起后，来看一下效果：<br><img src="http://ww1.sinaimg.cn/large/873fcdb7gw1f7pi5gdhd7j206s0rsq3o.jpg" alt=""></p>
+<p>很简单吧，好了，原理我们已经了解，接下来我们来实现带小三角形的会话框。</p>
+<h2 id="实现带小三角形的会话框"><a href="#实现带小三角形的会话框" class="headerlink" title="实现带小三角形的会话框"></a>实现带小三角形的会话框</h2><p>首先，写出html代码：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"dialog"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"trangle"</span>&gt;</span><span class="comment">&lt;!--本Div只用来绘制三角形--&gt;</span> </div><div class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">    hello，world<span class="tag">&lt;<span class="name">br</span>&gt;</span></div><div class="line">    hello，world<span class="tag">&lt;<span class="name">br</span>&gt;</span></div><div class="line">    hello，world<span class="tag">&lt;<span class="name">br</span>&gt;</span></div><div class="line">    hello，world<span class="tag">&lt;<span class="name">br</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<ul>
+<li><code>.trangle</code>的div只用来实现小三角形，对这个div用css的border和transparent实现三角形。</li>
+<li>再通过定位和会话框组合</li>
+</ul>
+<p>看下面css代码：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*下面开始来画带三角形的会话框*/</span></div><div class="line"></div><div class="line"><span class="comment">/*先关掉margin和padding，避免带来干扰*/</span></div><div class="line">* &#123;</div><div class="line">  <span class="attribute">margin</span>: <span class="number">0</span>;</div><div class="line">  <span class="attribute">padding</span>: <span class="number">0</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="selector-tag">body</span>&#123;</div><div class="line">  <span class="attribute">background</span>: gray;</div><div class="line">  <span class="attribute">font-size</span>: <span class="number">20px</span>;</div><div class="line">  <span class="attribute">font-family</span>: Comic Sans MS;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="selector-class">.dialog</span> &#123;</div><div class="line">  <span class="attribute">margin</span>: <span class="number">0</span> auto;</div><div class="line">  <span class="attribute">margin-top</span>: <span class="number">15px</span>;</div><div class="line">  <span class="attribute">width</span>: <span class="number">300px</span>;            </div><div class="line">  <span class="attribute">background</span>: <span class="number">#fff</span>;</div><div class="line">  <span class="attribute">padding</span>: <span class="number">10px</span>;</div><div class="line">  <span class="attribute">border-radius</span>: <span class="number">5px</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="selector-class">.trangle</span>&#123;</div><div class="line">  <span class="attribute">position</span>: absolute;</div><div class="line">  <span class="attribute">margin-left</span>: -<span class="number">20px</span>;</div><div class="line">  <span class="attribute">width</span>: <span class="number">0</span>;</div><div class="line">  <span class="attribute">height</span>: <span class="number">0</span>;</div><div class="line">  <span class="attribute">border-top</span>: <span class="number">10px</span> solid transparent;</div><div class="line">  <span class="attribute">border-bottom</span>: <span class="number">10px</span> solid transparent;</div><div class="line">  <span class="attribute">border-right</span>: <span class="number">10px</span> solid <span class="number">#fff</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>效果是这样的：<br><img src="http://ww4.sinaimg.cn/large/873fcdb7gw1f7plr95yzfj20y00goaas.jpg" alt=""></p>
+<p>好了，到这里我们就完工了，剩下的就是做一些美化的工作了。</p>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="0" height="0" src="http://music.163.com/outchain/player?type=2&id=28387594&auto=0&height=0"></iframe><br><iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="https://music.163.com/outchain/player?type=2&id=28387594&auto=1&height=66"></iframe>
+
+<!-- >最近访客
+
+<div class="ds-recent-visitors" data-num-items="28" data-avatar-size="42" id="ds-recent-visitors"></div>
+<br> -->]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;生活中能看到很多带小三角形的会话框，如QQ、微信、时间轴等等，就像这样的：&lt;br&gt;&lt;img src=&quot;http://ww1.sinaimg.cn/large/873fcdb7gw1f7pm570m9xj209803m74c.jpg&quot; alt=&quot;&quot;&gt;&lt;br&gt;在内容外面都有一个带小三角形的矩形框包围着，看上去视觉效果还不错，于是决定动手写一个，用纯CSS就能实现，下面我们来看一下。&lt;/p&gt;
+&lt;h2 id=&quot;基本原理&quot;&gt;&lt;a href=&quot;#基本原理&quot; class=&quot;headerlink&quot; title=&quot;基本原理&quot;&gt;&lt;/a&gt;基本原理&lt;/h2&gt;&lt;h3 id=&quot;首先我们来看一下纯CSS实现三角形的原理：&quot;&gt;&lt;a href=&quot;#首先我们来看一下纯CSS实现三角形的原理：&quot; class=&quot;headerlink&quot; title=&quot;首先我们来看一下纯CSS实现三角形的原理：&quot;&gt;&lt;/a&gt;首先我们来看一下纯CSS实现三角形的原理：&lt;/h3&gt;&lt;p&gt;其实就是对于border和transparent的应用&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Web" scheme="https://chentao92.github.io/categories/Web/"/>
+    
+    
+      <category term="css" scheme="https://chentao92.github.io/tags/css/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>怎样使用Hexo通过Github Pages搭建个人博客</title>
+    <link href="https://chentao92.github.io/2016/07/22/how%20to%20bulid%20your%20blog%20on%20github%20pages/"/>
+    <id>https://chentao92.github.io/2016/07/22/how to bulid your blog on github pages/</id>
+    <published>2016-07-22T08:08:15.000Z</published>
+    <updated>2017-07-26T06:39:33.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在搭建博客的过程中参考了一些其他作者的资料，也遇到了一些小问题，所幸在Google之后找到了解决方案，感谢这些作者们，于是我决定把搭建的全过程记录下来，希望能够给大家提供一些参考。</p>
+<h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><h2 id="注册Github账号"><a href="#注册Github账号" class="headerlink" title="注册Github账号"></a>注册Github账号</h2><p>访问：<a href="http://www.github.com/" target="_blank" rel="external">http://www.github.com/</a></p>
+<h2 id="配置SSH-keys和添加SSH-Key到Github"><a href="#配置SSH-keys和添加SSH-Key到Github" class="headerlink" title="配置SSH keys和添加SSH Key到Github"></a>配置SSH keys和添加SSH Key到Github</h2><p>1.终端中输入下列指令，生成密钥，一路回车</p>
+<blockquote>
+<p>$ ssh-keygen</p>
+</blockquote>
+<a id="more"></a>
+<p>出现下面所示则表示密钥成功生成<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">Your identification has been saved in /Users/taochen/.ssh/id_rsa.</div><div class="line">Your public key has been saved in /Users/taochen/.ssh/id_rsa.pub.</div><div class="line">The key fingerprint is:</div><div class="line">SHA256:ckScuB/7NjJDT0OUbtm1dp4lUiPr5mcV3xJqVzcR9Ng taochen@TC-MacBookpro.local</div><div class="line">The key&apos;s randomart image is:</div><div class="line">+---[RSA 2048]----+</div><div class="line">|       o.. .  .o.|</div><div class="line">|      ..o o . ++.|</div><div class="line">|       ..o o =.oE|</div><div class="line">|      ... = + =o=|</div><div class="line">|      ..S= . + *O|</div><div class="line">|       o+ o = o.=|</div><div class="line">|       . + = . o |</div><div class="line">|        + = . o  |</div><div class="line">|         = . o   |</div><div class="line">+----[SHA256]-----+</div><div class="line">TC-MacBookpro:~ taochen$</div></pre></td></tr></table></figure></p>
+<p>2.密钥生成以后，存放在<code>~/.ssh</code>目录中</p>
+<blockquote>
+<p>$ ls ~/.ssh</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ ls ~/.ssh</div><div class="line">id_rsa      id_rsa.pub</div></pre></td></tr></table></figure>
+<blockquote>
+<p>$ cat ~/.ssh/id_rsa.pub</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ cat ~/.ssh/id_rsa.pub </div><div class="line">ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDA9vWA+ToVHjvMV+9LerF7hdHawqh3ls8OVSsYNfP2ppLS4/w47cWKOR+9Dv6cgqJLstDt7mgnbcpFcztLYZKBy1ZPBgOA1tYtxDIA2pDMIKsYd9M7UosgavCMgBg0dlO1y+xUhnyShqduDHblCCUjM9D+rB6HipeNQWZLWNZ39anPvjTp9ZizdDTtPYi7zaB/fcUatqxeHkFUjHm6WYaC/gQrYsqj1LAonQCdfdgHL8VZg2sXTxl+AOZfX1ZGTs3qXFAoUkDWaMQKC3UNTNrUC9MwNcs/+cLecaDMf+5BBxI71xRP+JLvAy1mTeux2vk0d9FyLU7et9d taochen@TC-MacBookpro.local</div></pre></td></tr></table></figure>
+<p>复制出密钥内容</p>
+<p>3.到github中添加密钥（把ssh的公钥给github）</p>
+<p>登陆github系统。点击右上角的 Account Settings—&gt;SSH and GPG keys —&gt;New SSH key —&gt;填写<code>Title</code>和<code>Key</code><br><img src="http://ww1.sinaimg.cn/bmiddle/873fcdb7gw1f7js23dlmbj20qu0wejtv.jpg" alt=""><br><img src="http://ww1.sinaimg.cn/large/873fcdb7jw1f7jspdbjqxj21ht0vlgv4.jpg" alt=""></p>
+<p>4.最后，点击<code>Add SSH key</code>确认添加密钥</p>
+<h1 id="使用Github-Pages建立博客"><a href="#使用Github-Pages建立博客" class="headerlink" title="使用Github Pages建立博客"></a>使用Github Pages建立博客</h1><h2 id="github上建立仓库"><a href="#github上建立仓库" class="headerlink" title="github上建立仓库"></a>github上建立仓库</h2><p>1.在github首页，点击页面中的<code>Start a project</code><br><img src="http://ww3.sinaimg.cn/large/873fcdb7jw1f7jsrf98esj21800o443s.jpg" alt=""></p>
+<p>2.输入仓库名：<code>username.github.io</code> (username指你的github用户名，这里以<code>ChenTao92</code>为例)<br><img src="http://ww4.sinaimg.cn/large/873fcdb7jw1f7jt682c22j21ew0xe0y6.jpg" alt=""></p>
+<p><strong><em>注：Github Pages的Repository的名字是有规定格式的，否则Github无法识别这个Repository是你的Github账户的Pages</em></strong></p>
+<h2 id="在本地创建名为blog的文件夹，并初始化为git仓库"><a href="#在本地创建名为blog的文件夹，并初始化为git仓库" class="headerlink" title="在本地创建名为blog的文件夹，并初始化为git仓库"></a>在本地创建名为<code>blog</code>的文件夹，并初始化为git仓库</h2><p>(文件夹名可随意，此处以<code>blog</code>为例)<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ mkdir blog</div><div class="line">$ <span class="built_in">cd</span> blog</div><div class="line">$ git init</div></pre></td></tr></table></figure></p>
+<p>这里用于存放建立blog的原始文件</p>
+<h2 id="Hexo模板引擎"><a href="#Hexo模板引擎" class="headerlink" title="Hexo模板引擎"></a>Hexo模板引擎</h2><h3 id="Hexo是什么"><a href="#Hexo是什么" class="headerlink" title="Hexo是什么"></a>Hexo是什么</h3><p>Hexo是一个简单、快速、强大的博客发布工具，支持Markdown格式，具体详见<a href="https://hexo.io/docs/index.html" target="_blank" rel="external">官方介绍</a>。</p>
+<h3 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ npm install -g hexo</div></pre></td></tr></table></figure>
+<h3 id="初始化Hexo"><a href="#初始化Hexo" class="headerlink" title="初始化Hexo"></a>初始化Hexo</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo init</div></pre></td></tr></table></figure>
+<p>Hexo引擎随后会自动在目标文件夹里生成建立blog所需的所有文件。</p>
+<h2 id="更换Hexo主题"><a href="#更换Hexo主题" class="headerlink" title="更换Hexo主题"></a>更换Hexo主题</h2><h3 id="复制主题"><a href="#复制主题" class="headerlink" title="复制主题"></a>复制主题</h3><p>可以去<a href="https://hexo.io/themes/" target="_blank" rel="external">Hexo官网</a>寻找你喜欢的主题，这里我们以选用Apollo主题为例:<br>1.先进入blog下面的themes文件夹<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">➜  blog git:(master) ✗ <span class="built_in">cd</span> themes</div><div class="line">➜  themes git:(master) ✗</div></pre></td></tr></table></figure></p>
+<p>2.将主题的仓库代码克隆到本地<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git clone https://github.com/pinggod/hexo-theme-apollo.git  apllo</div></pre></td></tr></table></figure></p>
+<h3 id="启用主题"><a href="#启用主题" class="headerlink" title="启用主题"></a>启用主题</h3><p>1.在编辑器中打开blog文件夹<br>2.修改<code>_config.yml</code>配置文件中的<code>theme</code>配置项为<code>apollo</code><br>3.<code>_config.yml</code>配置文件中的<code>title</code>和<code>author</code>等信息可根据自己的需要进行更改</p>
+<h3 id="验证主题"><a href="#验证主题" class="headerlink" title="验证主题"></a>验证主题</h3><p>首先启动 Hexo 本地站点<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo s</div></pre></td></tr></table></figure></p>
+<p>在服务启动的过程中，注意观察命令行输出是否有任何异常信息，当命令行输出中提示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">INFO  Hexo is running at http://localhost:4000/. Press Ctrl+C to stop.</div></pre></td></tr></table></figure></p>
+<p>此时即可使用浏览器访问 <a href="http://localhost:4000" target="_blank" rel="external">http://localhost:4000</a> ， 以验证主题是否正确启用。</p>
+<h3 id="若遇到主题无法启用，可能还需要安装某些theme插件"><a href="#若遇到主题无法启用，可能还需要安装某些theme插件" class="headerlink" title="若遇到主题无法启用，可能还需要安装某些theme插件"></a>若遇到主题无法启用，可能还需要安装某些theme插件</h3><ul>
+<li>若未遇到主题无法启用的问题，本步骤请忽略</li>
+<li>具体请参考主题的详细介绍页面，如Apollo主题就需要安装执行下面的指令：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ npm install --save hexo-renderer-jade hexo-generator-feed hexo-generator-sitemap hexo-browsersync hexo-generator-archive</div></pre></td></tr></table></figure>
+<h2 id="配置deploy"><a href="#配置deploy" class="headerlink" title="配置deploy"></a>配置deploy</h2><p>在<code>_config.yml</code>文件中配置deploy（<code>username</code>以<code>ChenTao92</code>为例,请自行替换为自己的<code>username</code>）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">type</span>: git</div><div class="line">repository: git@github.com:ChenTao92/ChenTao92.github.io.git</div><div class="line">branch: master</div></pre></td></tr></table></figure>
+<h2 id="写博客"><a href="#写博客" class="headerlink" title="写博客"></a>写博客</h2><p>输入<code>hexo new postName</code>指令即可，<code>postName</code>为你的新博文名称，hexo会在 <code>blog/source/_posts/</code>目录下建立新的<code>.md</code>文件，写入Markdown格式博文即可。</p>
+<p>写完博客之后，可以同样先输入命令<code>hexo s</code>启动本地服务，进行文章预览调试。</p>
+<h2 id="推送到Github"><a href="#推送到Github" class="headerlink" title="推送到Github"></a>推送到Github</h2><p>在本地预览无误后，可以执行推送到github的命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ hexo g</div><div class="line">$ hexo d</div></pre></td></tr></table></figure></p>
+<h2 id="遇到“Deployer-not-found-github”时的解决办法"><a href="#遇到“Deployer-not-found-github”时的解决办法" class="headerlink" title="遇到“Deployer not found: github”时的解决办法"></a>遇到“Deployer not found: github”时的解决办法</h2><ul>
+<li>若未遇到此问题，本步骤请忽略</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ npm install hexo-deployer-git --save</div></pre></td></tr></table></figure>
+<h2 id="访问博客"><a href="#访问博客" class="headerlink" title="访问博客"></a>访问博客</h2><p>在以上步骤都成功完整后，浏览器访问链接 <code>https://{username}.github.io</code> 即可。<br>e.g. : <a href="https://chentao92.github.io">https://chentao92.github.io</a></p>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="0" height="0" src="http://music.163.com/outchain/player?type=2&id=425298905&auto=0&height=0"></iframe><br><iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="https://music.163.com/outchain/player?type=2&id=425298905&auto=1&height=66"></iframe>
+
+<!-- >最近访客
+
+<div class="ds-recent-visitors" data-num-items="28" data-avatar-size="42" id="ds-recent-visitors"></div>
+<br> -->
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h1&gt;&lt;p&gt;在搭建博客的过程中参考了一些其他作者的资料，也遇到了一些小问题，所幸在Google之后找到了解决方案，感谢这些作者们，于是我决定把搭建的全过程记录下来，希望能够给大家提供一些参考。&lt;/p&gt;
+&lt;h1 id=&quot;准备工作&quot;&gt;&lt;a href=&quot;#准备工作&quot; class=&quot;headerlink&quot; title=&quot;准备工作&quot;&gt;&lt;/a&gt;准备工作&lt;/h1&gt;&lt;h2 id=&quot;注册Github账号&quot;&gt;&lt;a href=&quot;#注册Github账号&quot; class=&quot;headerlink&quot; title=&quot;注册Github账号&quot;&gt;&lt;/a&gt;注册Github账号&lt;/h2&gt;&lt;p&gt;访问：&lt;a href=&quot;http://www.github.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://www.github.com/&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&quot;配置SSH-keys和添加SSH-Key到Github&quot;&gt;&lt;a href=&quot;#配置SSH-keys和添加SSH-Key到Github&quot; class=&quot;headerlink&quot; title=&quot;配置SSH keys和添加SSH Key到Github&quot;&gt;&lt;/a&gt;配置SSH keys和添加SSH Key到Github&lt;/h2&gt;&lt;p&gt;1.终端中输入下列指令，生成密钥，一路回车&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;$ ssh-keygen&lt;/p&gt;
+&lt;/blockquote&gt;
+    
+    </summary>
+    
+      <category term="Course" scheme="https://chentao92.github.io/categories/Course/"/>
+    
+    
+      <category term="Hexo" scheme="https://chentao92.github.io/tags/Hexo/"/>
+    
+      <category term="blog" scheme="https://chentao92.github.io/tags/blog/"/>
+    
+  </entry>
+  
+</feed>
